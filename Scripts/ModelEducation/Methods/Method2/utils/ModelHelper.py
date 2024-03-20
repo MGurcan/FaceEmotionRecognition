@@ -1,5 +1,4 @@
 import cv2
-from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import StandardScaler
@@ -8,6 +7,32 @@ from scipy.ndimage import convolve
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
+from skimage.feature import hog
+from sklearn.svm import SVC
+
+def apply_hog_and_pca(X_train, X_test, y_train, y_test, shape=48):
+    X_train_hog = extract_hog_features(X_train, shape)
+    X_test_hog = extract_hog_features(X_test, shape)
+    pca = PCA(n_components=0.95)
+    X_train_pca = pca.fit_transform(X_train_hog)
+    X_test_pca = pca.transform(X_test_hog)
+    return X_train_pca, X_test_pca
+
+def apply_hog_and_lda(X, y):
+    X_hog = extract_hog_features(X)
+    lda = LDA(n_components=3)
+    X_lda = lda.fit_transform(X_hog, y)
+    return X_lda
+
+def extract_hog_features(images, shape=48):
+    hog_features = []
+    for image in images:
+        image_resized = image.reshape(shape, shape)
+        fd = hog(image_resized, orientations=8, pixels_per_cell=(16, 16),
+                 cells_per_block=(1, 1), visualize=False)
+        hog_features.append(fd)
+    return np.array(hog_features)
+
 
 def apply_gabor_filter(image, kernel):
     return convolve(image, kernel.real) + convolve(image, kernel.imag)
@@ -61,6 +86,18 @@ def classify_with_knn(X_train, X_test, y_train, y_test, n_neighbors=5):
     accuracy = accuracy_score(y_test, y_pred_knn)
     print(f'Test seti üzerindeki doğruluk: {accuracy:.2f}')
     return y_pred_knn
+
+def classify_with_svm(X_train, X_test, y_train, y_test):
+    svm_classifier = SVC()
+
+    svm_classifier.fit(X_train, y_train)
+
+    y_pred_svm = svm_classifier.predict(X_test)
+
+    # Tahmin başarımını değerlendirme
+    accuracy = accuracy_score(y_test, y_pred_svm)
+    print(f'Test seti üzerindeki doğruluk: {accuracy:.2f}')
+    return y_pred_svm
 
 def euclidean_distance(a, b):
     return np.sqrt(np.sum((a - b) ** 2))

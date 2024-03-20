@@ -15,7 +15,50 @@ def prepare_small_test_set(X_test, y_test):
     y_test_small = np.concatenate(y_test_small)
     return X_test_small, y_test_small
 
-def load_images_from_folder_fer_2013(folder):
+def load_images_from_folder_fer_2013(folder, max_images_per_class=None):
+    images = []
+    labels = []
+    for label_folder in os.listdir(folder):
+        label_folder_path = os.path.join(folder, label_folder)
+        if os.path.isdir(label_folder_path):
+            count_images_for_class = 0
+            print("label_folder_path: ", label_folder_path)
+            for image_file in os.listdir(label_folder_path):
+                if max_images_per_class is not None and count_images_for_class >= max_images_per_class:
+                    print(f"Reached maximum number of images for class {label_folder}. Skipping the rest.")
+                    break
+                count_images_for_class += 1
+                image_path = os.path.join(label_folder_path, image_file)
+                img = cv2.imread(image_path)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                img = cv2.resize(img, (48, 48))
+                images.append(img.flatten())
+                labels.append(label_folder)
+    return np.array(images), np.array(labels)
+
+def load_images_from_folder_expW(folder, max_images_per_class=None):
+    images = []
+    labels = []
+    for label_folder in os.listdir(folder):
+        label_folder_path = os.path.join(folder, label_folder)
+        if os.path.isdir(label_folder_path):
+            count_images_for_class = 0
+            print("label_folder_path: ", label_folder_path)
+            for image_file in os.listdir(label_folder_path):
+                if max_images_per_class is not None and count_images_for_class >= max_images_per_class:
+                    print(f"Reached maximum number of images for class {label_folder}. Skipping the rest.")
+                    break
+                count_images_for_class += 1
+                image_path = os.path.join(label_folder_path, image_file)
+                img = cv2.imread(image_path)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                img = cv2.resize(img, (100, 100))
+                images.append(img.flatten())
+                labels.append(label_folder)
+    return np.array(images), np.array(labels)
+
+
+def load_images_from_folder_fer_2013_blurred(folder):
     images = []
     labels = []
     for label_folder in os.listdir(folder):
@@ -26,9 +69,11 @@ def load_images_from_folder_fer_2013(folder):
                 img = cv2.imread(image_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 img = cv2.resize(img, (48, 48))
+                img = cv2.GaussianBlur(img, (5, 5), 0)
                 images.append(img.flatten())
                 labels.append(label_folder)
     return np.array(images), np.array(labels)
+
 
 def histogram_equalization(image):
     # plot the image
