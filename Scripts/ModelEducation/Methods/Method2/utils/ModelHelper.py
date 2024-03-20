@@ -1,7 +1,66 @@
+import cv2
+from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import StandardScaler
+from skimage.filters import gabor_kernel
+from scipy.ndimage import convolve
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 
+def apply_gabor_filter(image, kernel):
+    return convolve(image, kernel.real) + convolve(image, kernel.imag)
+
+def extract_gabor_features(image, kernels):
+    img_reshaped = image.reshape(48, 48)
+    features = []
+    for kernel in kernels:
+        filtered = apply_gabor_filter(img_reshaped, kernel)
+        features.append(filtered.mean())
+        features.append(filtered.var())
+    return features
+
+def apply_gabor_and_pca(X, y):
+    kernels = []
+    for theta in range(4):
+        theta = theta / 4. * np.pi
+        for sigma in (1, 3):
+            for frequency in (0.05, 0.25):
+                kernel = gabor_kernel(frequency, theta=theta, sigma_x=sigma, sigma_y=sigma)
+                kernels.append(kernel)
+
+    X_gabor = np.array([extract_gabor_features(image, kernels) for image in X])
+    pca = PCA(n_components=0.95)  # %95 varyansı koruyacak şekilde boyut azaltma
+    X_pca = pca.fit_transform(X_gabor)
+    return X_pca
+
+def apply_gabor_and_lda(X, y):
+    kernels = []
+    for theta in range(4):
+        theta = theta / 4. * np.pi
+        for sigma in (1, 3):
+            for frequency in (0.05, 0.25):
+                kernel = gabor_kernel(frequency, theta=theta, sigma_x=sigma, sigma_y=sigma)
+                kernels.append(kernel)
+
+    X_gabor = np.array([extract_gabor_features(image, kernels) for image in X])
+    lda = LDA()  # LDA nesnesi oluşturulur, varsayılan olarak tüm bileşenleri kullanır
+    X_lda = lda.fit_transform(X_gabor, y)  # LDA, hem fit hem de transform işlemini yapar
+    return X_lda
+
+def classify_with_knn(X_train, X_test, y_train, y_test, n_neighbors=5):
+    knn_classifier = KNeighborsClassifier(n_neighbors=n_neighbors)
+
+    knn_classifier.fit(X_train, y_train)
+
+    # Predict on the test set
+    y_pred_knn = knn_classifier.predict(X_test)
+
+    # Tahmin başarımını değerlendirme
+    accuracy = accuracy_score(y_test, y_pred_knn)
+    print(f'Test seti üzerindeki doğruluk: {accuracy:.2f}')
+    return y_pred_knn
 
 def euclidean_distance(a, b):
     return np.sqrt(np.sum((a - b) ** 2))
