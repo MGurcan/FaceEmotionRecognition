@@ -15,7 +15,7 @@ def prepare_small_test_set(X_test, y_test):
     y_test_small = np.concatenate(y_test_small)
     return X_test_small, y_test_small
 
-def load_images_from_folder_fer_2013(folder, max_images_per_class=None):
+def load_images_from_folder_fer_2013(folder, max_images_per_class=None, flatten=True):
     images = []
     labels = []
     for label_folder in os.listdir(folder):
@@ -32,7 +32,10 @@ def load_images_from_folder_fer_2013(folder, max_images_per_class=None):
                 img = cv2.imread(image_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 img = cv2.resize(img, (48, 48))
-                images.append(img.flatten())
+                if flatten:
+                    images.append(img.flatten())
+                else:
+                    images.append(img)
                 labels.append(label_folder)
     return np.array(images), np.array(labels)
 

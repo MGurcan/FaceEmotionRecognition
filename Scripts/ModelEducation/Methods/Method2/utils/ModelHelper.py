@@ -33,6 +33,24 @@ def extract_hog_features(images, shape=48):
         hog_features.append(fd)
     return np.array(hog_features)
 
+def sliding_hog_windows(image, window_size=24, window_step=6):
+    image_height = 48
+    image_width = 48
+
+    hog_windows = []
+    for y in range(0, image_height, window_step):
+        for x in range(0, image_width, window_step):
+            window = image[y:y+window_size, x:x+window_size]
+            hog_windows.extend(hog(window, orientations=8, pixels_per_cell=(8, 8),
+                                            cells_per_block=(1,1)))
+    return hog_windows
+
+def get_window_based_hog_features(images, window_size=24, window_step=6):
+    hog_features = []
+    for image in images:
+        features = sliding_hog_windows(image, window_size, window_step)
+        hog_features.append(features)
+    return hog_features
 
 def apply_gabor_filter(image, kernel):
     return convolve(image, kernel.real) + convolve(image, kernel.imag)
