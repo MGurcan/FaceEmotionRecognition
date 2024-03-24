@@ -5,18 +5,26 @@ import shutil
 from sklearn.model_selection import train_test_split
 
 
-def load_images_from_folder_fer_2013(folder):
+def load_images_from_folder(folder, max_images_per_class=None, flatten=False):
     images = []
     labels = []
     for label_folder in os.listdir(folder):
         label_folder_path = os.path.join(folder, label_folder)
         if os.path.isdir(label_folder_path):
+            count_images_for_class = 0
+            print("label_folder_path: ", label_folder_path)
             for image_file in os.listdir(label_folder_path):
+                if max_images_per_class is not None and count_images_for_class >= max_images_per_class:
+                    print(f"Reached maximum number of images for class {label_folder}. Skipping the rest.")
+                    break
+                count_images_for_class += 1
                 image_path = os.path.join(label_folder_path, image_file)
                 img = cv2.imread(image_path)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 img = cv2.resize(img, (48, 48))
-                images.append(img.flatten())
+                if flatten:
+                    img = img.flatten()
+                images.append(img)
                 labels.append(label_folder)
     return np.array(images), np.array(labels)
 

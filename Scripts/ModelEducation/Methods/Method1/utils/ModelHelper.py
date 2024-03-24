@@ -1,11 +1,17 @@
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import StandardScaler
+from sklearn.metrics.pairwise import cosine_similarity
 
 
+# DISTANCE BASED METHODS
+#------------------------------------------------------------------------
 def euclidean_distance(a, b):
     return np.sqrt(np.sum((a - b) ** 2))
 
+def cosine_distance(a, b):
+    similarity = cosine_similarity(a.reshape(1, -1), b.reshape(1, -1))
+    return 1 - similarity
 
 def predict_with_euclidean_distance(X_train, y_train, X_test):
     print("X_Test lenght: ", len(X_test))
@@ -21,14 +27,6 @@ def predict_with_euclidean_distance(X_train, y_train, X_test):
         predictions.append(y_train[min_index])
     return predictions
 
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-
-def cosine_distance(a, b):
-    # Kosinüs benzerliğini hesaplayıp bunu mesafe olarak döndürmek için 1'den çıkarırız.
-    similarity = cosine_similarity(a.reshape(1, -1), b.reshape(1, -1))
-    return 1 - similarity
-
 def predict_with_cosine_distance(X_train, y_train, X_test):
     print("X_Test length: ", len(X_test))
     predictions = []
@@ -41,7 +39,7 @@ def predict_with_cosine_distance(X_train, y_train, X_test):
         min_index = np.argmin(distances)
         predictions.append(y_train[min_index])
     return predictions
-
+#------------------------------------------------------------------------
 
 
 default_params = {'n_components': 150, 'svd_solver': 'auto',
