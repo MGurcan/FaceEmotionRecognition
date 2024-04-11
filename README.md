@@ -31,6 +31,10 @@ https://drive.google.com/drive/folders/1nCjf3n_J1JopZ6Ppa37441bIXXtLEwGx?usp=sha
 
 ---
 
+# Model Layer Diagrams
+https://drive.google.com/drive/folders/1nCjf3n_J1JopZ6Ppa37441bIXXtLEwGx?usp=sharing
+In the link below Model Layer Diagrams can be seen.
+
 # Usage Instructions
 ### Clone the Repository: Start by cloning this repository to your local machine or open it directly in Google Colab.
 
