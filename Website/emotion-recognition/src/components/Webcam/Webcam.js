@@ -70,7 +70,7 @@ function WebcamComponent() {
                 }
             }
 
-        }, 1000)
+        }, 250)
     }
 
     const captureImageFromVideo = (faceBox) => {
@@ -104,6 +104,7 @@ function WebcamComponent() {
                 width: 4,
                 height: 3,
                 emotion: emotionReturned.emotion,
+                probabilities: emotionReturned.probabilities,
                 // time: currentTime.toLocaleString()
                 time: currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds()
             }]);

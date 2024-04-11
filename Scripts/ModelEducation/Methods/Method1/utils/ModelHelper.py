@@ -13,19 +13,19 @@ def cosine_distance(a, b):
     similarity = cosine_similarity(a.reshape(1, -1), b.reshape(1, -1))
     return 1 - similarity
 
-def predict_with_euclidean_distance(X_train, y_train, X_test):
-    print("X_Test lenght: ", len(X_test))
-    predictions = []
-    counter = 0
-    for test_sample in X_test:
-        counter += 1
-        if counter % 100 == 0:
-            print("%", counter / len(X_test) * 100)
-        distances = [euclidean_distance(
-            test_sample, train_sample) for train_sample in X_train]
-        min_index = np.argmin(distances)
-        predictions.append(y_train[min_index])
-    return predictions
+# def predict_with_euclidean_distance(X_train, y_train, X_test):
+#     print("X_Test lenght: ", len(X_test))
+#     predictions = []
+#     counter = 0
+#     for test_sample in X_test:
+#         counter += 1
+#         if counter % 100 == 0:
+#             print("%", counter / len(X_test) * 100)
+#         distances = [euclidean_distance(
+#             test_sample, train_sample) for train_sample in X_train]
+#         min_index = np.argmin(distances)
+#         predictions.append(y_train[min_index])
+#     return predictions
 
 def predict_with_cosine_distance(X_train, y_train, X_test):
     print("X_Test length: ", len(X_test))

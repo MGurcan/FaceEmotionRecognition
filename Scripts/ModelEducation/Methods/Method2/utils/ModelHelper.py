@@ -10,13 +10,13 @@ from sklearn.metrics import accuracy_score
 from skimage.feature import hog
 from sklearn.svm import SVC
 
-def apply_hog_and_pca(X_train, X_test, y_train, y_test, shape=48):
-    X_train_hog = extract_hog_features(X_train, shape)
-    X_test_hog = extract_hog_features(X_test, shape)
-    pca = PCA(n_components=0.95)
-    X_train_pca = pca.fit_transform(X_train_hog)
-    X_test_pca = pca.transform(X_test_hog)
-    return X_train_pca, X_test_pca
+# def apply_hog_and_pca(X_train, X_test, y_train, y_test, shape=48):
+#     X_train_hog = extract_hog_features(X_train, shape)
+#     X_test_hog = extract_hog_features(X_test, shape)
+#     pca = PCA(n_components=0.95)
+#     X_train_pca = pca.fit_transform(X_train_hog)
+#     X_test_pca = pca.transform(X_test_hog)
+#     return X_train_pca, X_test_pca
 
 def apply_hog_and_lda(X, y):
     X_hog = extract_hog_features(X)
@@ -92,18 +92,18 @@ def apply_gabor_and_lda(X, y):
     X_lda = lda.fit_transform(X_gabor, y)  # LDA, hem fit hem de transform işlemini yapar
     return X_lda
 
-def classify_with_knn(X_train, X_test, y_train, y_test, n_neighbors=5):
-    knn_classifier = KNeighborsClassifier(n_neighbors=n_neighbors)
+# def classify_with_knn(X_train, X_test, y_train, y_test, n_neighbors=5):
+#     knn_classifier = KNeighborsClassifier(n_neighbors=n_neighbors)
 
-    knn_classifier.fit(X_train, y_train)
+#     knn_classifier.fit(X_train, y_train)
 
-    # Predict on the test set
-    y_pred_knn = knn_classifier.predict(X_test)
+#     # Predict on the test set
+#     y_pred_knn = knn_classifier.predict(X_test)
 
-    # Tahmin başarımını değerlendirme
-    accuracy = accuracy_score(y_test, y_pred_knn)
-    print(f'Test seti üzerindeki doğruluk: {accuracy:.2f}')
-    return y_pred_knn
+#     # Tahmin başarımını değerlendirme
+#     accuracy = accuracy_score(y_test, y_pred_knn)
+#     print(f'Test seti üzerindeki doğruluk: {accuracy:.2f}')
+#     return y_pred_knn
 
 def classify_with_svm(X_train, X_test, y_train, y_test):
     svm_classifier = SVC()
