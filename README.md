@@ -41,3 +41,12 @@ https://drive.google.com/drive/folders/1nCjf3n_J1JopZ6Ppa37441bIXXtLEwGx?usp=sha
 ### Adding Test Images: You can add more images to the ImageSample folder to test the models' performance on new data.
 
 ### Viewing Outputs: The outputs for each test can be viewed directly in the notebooks, allowing for easy comparison and analysis of the models' performance.
+
+---
+
+# Try Website Version of VGG19
+
+- run npm install in Website / emotion-recognition folder
+- then run npm start on Website
+- for VGG service run python3 Vgg19.py on Website / emotion-recognition / server / Models folder
+- After that you will be able to try emotion recognition by VGG19 with webcam images
